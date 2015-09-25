@@ -8,3 +8,5 @@ void affichage_binaire(int a)
 	}
 	printf("%d",a%2)
 } 
+
+//added stuff
