@@ -14,3 +14,4 @@ object wall(posx,posy){
     wall.Rcsource.h=44;
     wall.Rcsource.w=wall.sprite_size;
 }
+

@@ -34,3 +34,18 @@ void freelist(liste* L)
 		it = reste;
 	}
 }
+
+
+/*house creation*/
+
+liste roof(posx,posy){
+
+    for(int i;i++; i<=12){
+
+
+    }
+
+
+
+}
+
