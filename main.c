@@ -7,19 +7,6 @@ int colorkey;
 
 int main(int argc, char *argv[])
 {
-    SDL_Init(SDL_INIT_VIDEO);
-    SDL_Surface *player, *temp, *screen = NULL;
-    SDL_Rect rcSrc, rcSprite;
-
-    rcSrc.x = 0;
-    rcSrc.y = 0;
-
-    rcSprite.x = 0;
-    rcSprite.y = 0;
-
-    screen = SDL_SetVideoMode(1184, 666, 32, SDL_HWSURFACE);
-    SDL_WM_SetCaption("Trivial Zombie", NULL);
-
     int continuer = 1;
     SDL_Event event;
 
@@ -32,16 +19,35 @@ int main(int argc, char *argv[])
             continuer = 0;
         }
 
+        SDL_Surface *screen = NULL, *player = NULL, *temp;
+        SDL_Rect rcSprite;
+
+
+        rcSprite.x = 0;
+        rcSprite.y = 0;
+
+
+        SDL_Init(SDL_INIT_VIDEO);
+        screen = SDL_SetVideoMode(1184, 666, 32, SDL_HWSURFACE);
+        SDL_WM_SetCaption("Trivial Zombie", NULL);
+
         temp   = SDL_LoadBMP("player.bmp");
         player = SDL_DisplayFormat(temp);
         colorkey = SDL_MapRGB(screen->format, 255, 0, 221);
         SDL_SetColorKey(player, SDL_SRCCOLORKEY | SDL_RLEACCEL, colorkey);
         SDL_FreeSurface(temp);
 
-        SDL_BlitSurface(player, &rcSrc, screen, &rcSprite);
+
+        SDL_BlitSurface(player, NULL, screen, &rcSprite);
+
+
         SDL_Flip(screen);
 
+
+        SDL_FreeSurface(player);
     }
+
     SDL_Quit();
+
     return 0;
 }
