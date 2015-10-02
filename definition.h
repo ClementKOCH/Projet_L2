@@ -15,8 +15,6 @@ typedef struct object{
     int sprite_size;
     SDL_Rect Rcsprite, Rcsource;
     int speed;
-    int x;
-    int y;
     int trans;
     int life;
 
@@ -48,7 +46,7 @@ liste* insert(object obj, liste* L);
 void freelist(liste* L);
 liste freeObj(liste* L);
 
-/*Definition objets*/
+/*Definition objects*/
 
 object zombie;
 object wall;
@@ -60,3 +58,5 @@ object player;
 /*Definition des spawn */
 
 object spawn_zombie();
+
+#endif // GENERATION_H
