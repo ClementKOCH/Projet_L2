@@ -15,8 +15,6 @@ typedef struct object{
     int sprite_size;
     SDL_Rect Rcsprite, Rcsource;
     int speed;
-    int x;
-    int y;
     int trans;
     int life;
 
@@ -55,8 +53,11 @@ object wall;
 object door;
 object fence;
 object bullet;
-object player;
+object playerd;
+object playerg;
 
 /*Definition des spawn */
 
 object spawn_zombie();
+
+#endif
