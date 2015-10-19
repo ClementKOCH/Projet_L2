@@ -4,9 +4,10 @@
 #include "definition.h"
 
 //Déclaration des variables
-int colorkey, mem_jump;
+int colorkey, mem_jump, continuer = 1;
 float vy = 0;
 SDL_Surface *screen = NULL, *temp;
+Uint8 *keystate;
 
 // Fonction qui affiche le joueur
 void draw_player(int a)
@@ -20,11 +21,23 @@ void draw_player(int a)
   }
 }
 
+void HandleEvent(SDL_Event event)
+{
+  switch (event.type){
+    case SDL_QUIT:
+      continuer = 0;
+      break;
+  }
+}
+
 int main(int argc, char *argv[])
 {
     // Déclaration des variables
-    int continuer = 1, v=1, memx = 556, memy = 444;
+    int v=1, memx = 556 ;
     SDL_Event event;
+    
+    playerg.Rcsprite.y = 444;
+    playerd.Rcsprite.y = 444;
 
     // Début du jeu
     while (continuer)
@@ -42,7 +55,7 @@ int main(int argc, char *argv[])
         SDL_FreeSurface(temp);
 
         playerd.Rcsprite.x = memx;
-        playerd.Rcsprite.y = memy;
+        playerd.Rcsprite.y -= vy;
 
         temp = SDL_LoadBMP("playerg.bmp");
         playerg.sprite = SDL_DisplayFormat(temp);
@@ -51,11 +64,10 @@ int main(int argc, char *argv[])
         SDL_FreeSurface(temp);
 
         playerg.Rcsprite.x = memx - 73;
-        playerg.Rcsprite.y = memy;
+        playerg.Rcsprite.y -= vy;
 
         // Affichage du joueur
         draw_player(v);
-	printf("Bobina\n");
         // Flip de l'écran
         SDL_Flip(screen);
 
@@ -63,51 +75,45 @@ int main(int argc, char *argv[])
         SDL_FreeSurface(playerd.sprite);
 	SDL_FreeSurface(playerg.sprite);
 	
-        // Destion des events
-        SDL_WaitEvent(&event);
-        switch(event.type)
-        {
-          case SDL_QUIT:
-            continuer = 0;
-            break;
-        }
-
-        
-        
-        /*printf("Bob\n");
-        
-	if(mem_jump == 1){
-	  vy -= 0.1;
-	  memy -= vy;
-	}
-       
-	if(vy <= -5.0){
-	  mem_jump = 0;
+        //Gestion des events
+	if (SDL_PollEvent(&event)){
+	  HandleEvent(event);
 	}
 	
-	switch(event.key.keysym.sym)
-        {
-          case SDLK_RIGHT:
-            v = 1;
-            memx += 1;
-            break;
-          case SDLK_LEFT:
-            v = 0;
-            memx -= 1;
-            break;
-          case SDLK_ESCAPE:
-            continuer = 0;
-            break;
-          case SDLK_SPACE:
-	    vy = 5.0;
-	    mem_jump = 1;
-            break;
-        }*/
+	keystate = SDL_GetKeyState(NULL);
+	
+	if(keystate[SDLK_RIGHT]){
+	  v = 1;
+          memx += 1;
+	}
+	
+	if(keystate[SDLK_LEFT]){
+	  v = 0;
+          memx -= 1;
+	}
+	
+	if((keystate[SDLK_SPACE]) && (mem_jump == 0)){
+          vy = 5.0;
+	  mem_jump = 1;
+	}
+	
+	if(mem_jump == 1){
+	  vy -= 0.1;
+	  printf("%d\n",playerd.Rcsprite.y);
+	}
+       
+	if(vy < -5.8){
+	  mem_jump = 0;
+	  vy = 0.0;
+	}
+        
+        
 
         
     }
 
     SDL_Quit();
+    
 
     return 0;
 }
