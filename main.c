@@ -55,13 +55,14 @@ int main(int argc, char *argv[])
 
         // Affichage du joueur
         draw_player(v);
-
+	printf("Bobina\n");
         // Flip de l'écran
         SDL_Flip(screen);
 
         // Libération de la surface du joueur
         SDL_FreeSurface(playerd.sprite);
-
+	SDL_FreeSurface(playerg.sprite);
+	
         // Destion des events
         SDL_WaitEvent(&event);
         switch(event.type)
@@ -71,7 +72,20 @@ int main(int argc, char *argv[])
             break;
         }
 
-        switch(event.key.keysym.sym)
+        
+        
+        /*printf("Bob\n");
+        
+	if(mem_jump == 1){
+	  vy -= 0.1;
+	  memy -= vy;
+	}
+       
+	if(vy <= -5.0){
+	  mem_jump = 0;
+	}
+	
+	switch(event.key.keysym.sym)
         {
           case SDLK_RIGHT:
             v = 1;
@@ -85,23 +99,12 @@ int main(int argc, char *argv[])
             continuer = 0;
             break;
           case SDLK_SPACE:
-            vy = 5.0;
-            mem_jump = 1;
+	    vy = 5.0;
+	    mem_jump = 1;
             break;
-        }
+        }*/
 
-        //Gestion des sauts
-        memy -= vy;
-        if(vy > 0) {
-          vy -= 0.001;
-        } else if (vy < 0)
-        {
-          vy += 0.001;
-        }
-        if((mem_jump == 1) && (vy == 0.0))
-        {
-          vy = -5.0;
-        }
+        
     }
 
     SDL_Quit();
