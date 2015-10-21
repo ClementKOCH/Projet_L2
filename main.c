@@ -1,6 +1,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <SDL/SDL.h>
+#include "math.h"
 #include "definition.h"
 
 //Déclaration des variables
@@ -10,6 +11,7 @@ Uint8 *keystate;
 SDL_Surface *screen = NULL, *temp;
 SDL_Event event;
 int  continuer = 1, memx = 556;
+SDL_Rect mouse;
 
 // Fonction qui affiche le joueur
 void draw_player(int a)
@@ -29,6 +31,10 @@ void HandleEvent(SDL_Event event)
     case SDL_QUIT:
       continuer = 0;
       break;
+    case SDL_MOUSEMOTION:
+      mouse.x = event.motion.x;
+      mouse.y = event.motion.y;
+      break;
   }
 }
 
@@ -37,8 +43,8 @@ int main(int argc, char *argv[])
     // Déclaration des variables
     int v=1;
     
-    playerg.Rcsprite.y = 512;
-    playerd.Rcsprite.y = 512;
+    playerg.Rcsprite.y = 504;
+    playerd.Rcsprite.y = 504;
 
     //Création de la maison
     create_house();
@@ -77,17 +83,49 @@ int main(int argc, char *argv[])
 	wall.sprite = SDL_DisplayFormat(temp);
 	SDL_FreeSurface(temp);
 
+	temp = SDL_LoadBMP("door.bmp");
+	door.sprite = SDL_DisplayFormat(temp);
+	SDL_FreeSurface(temp);
+
+	temp = SDL_LoadBMP("bullet.bmp");
+	bullet.sprite = SDL_DisplayFormat(temp);
+	colorkey = SDL_MapRGB(screen->format, 255, 0, 221);
+        SDL_SetColorKey(bullet.sprite, SDL_SRCCOLORKEY | SDL_RLEACCEL, colorkey);
+	SDL_FreeSurface(temp);
+	
         // Affichage du joueur
         draw_player(v);
 	
 	// Affichage de la maison
-	liste* it = house;
+	liste* it = w_house;
 	while(it != NULL) {
 	  object w = it -> obj;
 	  SDL_BlitSurface(wall.sprite, NULL, screen, &w.Rcsprite);
 	  
 	  it -> obj = w;
 	  it = it -> tail;
+	}
+	
+	// Affichage des portes
+	liste* prt = d_house;
+	while(prt != NULL) {
+	  object d = prt -> obj;
+	  SDL_BlitSurface(door.sprite, NULL, screen, &d.Rcsprite);
+	  
+	  prt -> obj = d;
+	  prt = prt -> tail;
+	}
+	
+	// Affichage des projectiles
+	liste* pr = proj;
+	while(pr != NULL) {
+	  object p = pr -> obj;
+	  p.Rcsprite.x += 10 *((cos(p.angle) * 2.0 * 3.14159265358979323)/360.0);
+	  p.Rcsprite.y -= 10* ((sin(p.angle) * 2.0 * 3.14159265358979323)/360.0);
+	  SDL_BlitSurface(bullet.sprite, NULL, screen, &p.Rcsprite);
+	  
+	  pr -> obj = p;
+	  pr = pr -> tail;
 	}
 	
         // Flip de l'écran
@@ -108,22 +146,35 @@ int main(int argc, char *argv[])
 	  continuer = 0;
 	}
 	
-	if(keystate[SDLK_RIGHT]){
+	if(keystate[SDLK_d]){
 	  if(!collision_player_right(memx,playerg.Rcsprite.y)){ 
 	    v = 1;
-	    memx += 1.5;
+	    memx += 2;
 	  }
 	}
 	
-	if(keystate[SDLK_LEFT]){
+	if(keystate[SDLK_q]){
 	  if(!collision_player_left(memx,playerg.Rcsprite.y)){ 
 	    v = 0;
-	    memx -= 1.5;
+	    memx -= 2;
 	  }
 	}
 	
+	if(keystate[SDLK_z]){
+	  double angle = (atan(abs(memx+73 - mouse.x)) / (abs(playerd.Rcsprite.y - mouse.y)));
+	  printf("%f\n", (atan(abs(memx+73 - mouse.x)) / (abs(playerd.Rcsprite.y - mouse.y))));
+	  if(v==1){
+	    shoot(memx + 73, playerd.Rcsprite.y + 16, angle);
+	  } else {
+	    shoot(memx - 80, playerd.Rcsprite.y + 16, angle);
+	  }
+	}
+	
+	
+	
+	//Gestion des Sauts
 	if((keystate[SDLK_SPACE]) && (mem_jump == 0)){
-          liste* col = house;
+          liste* col = w_house;
 	  while(col != NULL) {
 	    object w = col -> obj;
 	    if(v==1){
@@ -144,14 +195,15 @@ int main(int argc, char *argv[])
 	  }
 	}
 	
+	// Persistance des sauts
 	if(mem_jump == 1){
 	  vy -= 0.1;
 	}
-       
 	if(vy < -4.8){
 	  mem_jump = 0;
 	  vy = 0.0;
 	}
+
 	SDL_Delay(2);
     }
 

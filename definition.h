@@ -13,6 +13,7 @@ typedef struct object{
     int speed;
     int trans;
     int life;
+    double angle;
 
 }object;
 
@@ -32,6 +33,9 @@ liste freeObj();
 void create_house();
 object create_wall();
 object create_ceiling();
+object create_door();
+object create_bullet();
+void shoot();
 void draw_player();
 void HandleEvent();
 int collision_player_left();
@@ -49,7 +53,9 @@ object playerg;
 
 /* Definition des listes */
 
-liste* house;
+liste* w_house;
+liste* d_house;
+liste* proj;
 
 
 

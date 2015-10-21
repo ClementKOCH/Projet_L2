@@ -31,14 +31,14 @@ void create_house()
   while(compt < 3){
     deby -= 44;
     object wall = create_wall(debx,deby);
-    house = insert(wall, house);
+    w_house = insert(wall, w_house);
     compt ++;
   }
   compt = 0;
   deby -= 44;
   while(compt < 6){
     object wall = create_ceiling(debx,deby);
-    house = insert(wall, house);
+    w_house = insert(wall, w_house);
     compt ++;
     debx += 60;
   }
@@ -47,10 +47,17 @@ void create_house()
   deby += 44;
   while(compt < 3){
     object wall = create_wall(debx,deby);
-    house = insert(wall, house);
+    w_house = insert(wall, w_house);
     deby += 44;
     compt ++;
   }
+  debx = 429;
+  deby = 494;
+  object door = create_door(debx,deby);
+  d_house = insert(door, d_house);
+  debx += 300;
+  door = create_door(debx,deby);
+  d_house = insert(door, d_house);
 }
 
 object create_wall(int posx, int posy)
@@ -69,12 +76,18 @@ object create_ceiling(int posx, int posy)
   return wall;
 }
 
-
+object create_door(int posx, int posy)
+{
+  door.Rcsprite.x = posx;
+  door.Rcsprite.y = posy;
+  door.trans = 0;
+  return door;
+}
 
 int collision_player_left(int memx, int memy)
 {
   int res;
-  liste* col = house;
+  liste* col = w_house;
   while(col != NULL) {
     object w = col -> obj;
     if((memx <= w.Rcsprite.x + 134) && (memx >= w.Rcsprite.x) && (memy <= w.Rcsprite.y + 40) && (memx >= w.Rcsprite.y) ){
@@ -89,7 +102,7 @@ int collision_player_left(int memx, int memy)
 int collision_player_right(int memx, int memy)
 {
   int res;
-  liste* col = house;
+  liste* col = w_house;
   while(col != NULL) {
     object w = col -> obj;
     if((memx + 73 >= w.Rcsprite.x) && (memx <= w.Rcsprite.x + 60) && (memy <= w.Rcsprite.y + 40) && (memx >= w.Rcsprite.y)){
@@ -101,4 +114,14 @@ int collision_player_right(int memx, int memy)
   return res;
 }
   
-  
+object create_bullet(int posx, int posy, double angle){
+  bullet.Rcsprite.x = posx;
+  bullet.Rcsprite.y = posy;
+  bullet.angle = angle;
+  return bullet;
+}
+
+void shoot(int posx, int posy, double angle){
+  object bullet = create_bullet(posx,posy,angle);
+  proj = insert(bullet, proj);
+}
