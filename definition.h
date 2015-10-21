@@ -2,10 +2,6 @@
 #define GENERATION_H
 #include "SDL.h"
 
-/*Definition variables*/
-
-
-
 /*Definition des objets*/
 
 typedef struct object{
@@ -17,34 +13,33 @@ typedef struct object{
     int speed;
     int trans;
     int life;
+    double angle;
 
 }object;
 
 typedef struct liste{
 
-    struct object head;
+    struct object obj;
     struct liste* tail;
 
 }liste;
 
-typedef struct level{
-
-    int nbr_zombie;
-
-}level;
-
-typedef struct liste_level{
-
-    struct level head;
-    struct liste_level* tail;
-
-}liste_level;
 
 /*Definition des fonctions*/
 
-liste* insert(object obj, liste* L);
-void freelist(liste* L);
-liste freeObj(liste* L);
+liste* insert();
+void freelist();
+liste freeObj();
+void create_house();
+object create_wall();
+object create_ceiling();
+object create_door();
+object create_bullet();
+void shoot();
+void draw_player();
+void HandleEvent();
+int collision_player_left();
+int collision_player_right();
 
 /*Definition objets*/
 
@@ -56,8 +51,12 @@ object bullet;
 object playerd;
 object playerg;
 
-/*Definition des spawn */
+/* Definition des listes */
 
-object spawn_zombie();
+liste* w_house;
+liste* d_house;
+liste* proj;
+
+
 
 #endif
