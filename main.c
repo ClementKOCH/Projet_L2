@@ -108,21 +108,21 @@ int main(int argc, char *argv[])
 	  continuer = 0;
 	}
 	
-	if(keystate[SDLK_RIGHT]){
+	if(keystate[SDLK_d]){
 	  if(!collision_player_right(memx,playerg.Rcsprite.y)){ 
 	    v = 1;
 	    memx += 1.5;
 	  }
 	}
 	
-	if(keystate[SDLK_LEFT]){
+	if(keystate[SDLK_SPACE]){
 	  if(!collision_player_left(memx,playerg.Rcsprite.y)){ 
 	    v = 0;
 	    memx -= 1.5;
 	  }
 	}
 	
-	if((keystate[SDLK_SPACE]) && (mem_jump == 0)){
+	if((keystate[SDLK_q]) && (mem_jump == 0)){
           liste* col = house;
 	  while(col != NULL) {
 	    object w = col -> obj;
