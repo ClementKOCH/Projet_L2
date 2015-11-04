@@ -86,7 +86,7 @@ object create_door(int posx, int posy)
 
 int collision_player_left(int memx, int memy)
 {
-  int res;
+  int res = 0;
   liste* col = w_house;
   while(col != NULL) {
     object w = col -> obj;
@@ -101,7 +101,7 @@ int collision_player_left(int memx, int memy)
 
 int collision_player_right(int memx, int memy)
 {
-  int res;
+  int res = 0;
   liste* col = w_house;
   while(col != NULL) {
     object w = col -> obj;
