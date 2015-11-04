@@ -9,11 +9,11 @@ typedef struct object{
 
     SDL_Surface *sprite;
     int sprite_size;
-    SDL_Rect Rcsprite, Rcsource;
+    SDL_Rect Rcsprite, Rcsource, dest, dep;
     int speed;
     int trans;
     int life;
-    double angle;
+    int direct;
 
 }object;
 

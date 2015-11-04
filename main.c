@@ -5,7 +5,7 @@
 #include "definition.h"
 
 //Déclaration des variables
-int colorkey, mem_jump;
+int colorkey, mem_jump, v=1, direct, val;
 float vy = 0;
 Uint8 *keystate;
 SDL_Surface *screen = NULL, *temp;
@@ -27,21 +27,36 @@ void draw_player(int a)
 
 void HandleEvent(SDL_Event event)
 {
-  switch (event.type){
-    case SDL_QUIT:
+    if(event.type == SDL_QUIT){
       continuer = 0;
-      break;
-    case SDL_MOUSEMOTION:
+    }
+    if(event.type == SDL_MOUSEMOTION){
       mouse.x = event.motion.x;
       mouse.y = event.motion.y;
-      break;
-  }
+      if(mouse.x < memx){
+	v=0;
+      } else {
+	v=1;
+      }
+    }
+    if(event.type == SDL_MOUSEBUTTONDOWN) {
+      if(mouse.y > playerd.Rcsprite.y){
+	val = +100;
+      } else {
+	val = -100;
+      }
+      if(v==1){
+	shoot(memx + 73, playerd.Rcsprite.y + 16, 1, mouse.x , mouse.y );
+      } else {
+	shoot(memx - 7, playerd.Rcsprite.y + 16,-1, mouse.x, mouse.y );
+      }
+    }
 }
 
 int main(int argc, char *argv[])
 {
     // Déclaration des variables
-    int v=1;
+    
     
     playerg.Rcsprite.y = 504;
     playerd.Rcsprite.y = 504;
@@ -76,7 +91,7 @@ int main(int argc, char *argv[])
         SDL_SetColorKey(playerg.sprite, SDL_SRCCOLORKEY | SDL_RLEACCEL, colorkey);
         SDL_FreeSurface(temp);
 
-        playerg.Rcsprite.x = memx - 73;
+        playerg.Rcsprite.x = memx;
         playerg.Rcsprite.y -= vy;
 	
 	temp = SDL_LoadBMP("wall.bmp");
@@ -118,12 +133,24 @@ int main(int argc, char *argv[])
 	
 	// Affichage des projectiles
 	liste* pr = proj;
+	double xA,yA,xB,yB,px,py;
 	while(pr != NULL) {
 	  object p = pr -> obj;
-	  p.Rcsprite.x += 10 *((cos(p.angle) * 2.0 * 3.14159265358979323)/360.0);
-	  p.Rcsprite.y -= 10* ((sin(p.angle) * 2.0 * 3.14159265358979323)/360.0);
 	  SDL_BlitSurface(bullet.sprite, NULL, screen, &p.Rcsprite);
+	  xA = p.dep.x;
+	  yA = p.dep.y;
+	  xB = p.dest.x;
+	  yB = p.dest.y;
+	  px = p.Rcsprite.x;
 	  
+	  if((xA-xB)<1 && (xA-xB)>-1){
+	    py += (1*abs(p.dep.y - p.dest.y))/100;
+	  } else {
+	    px += (1*abs(p.dep.x - p.dest.x))/100 * p.direct;
+	    py = ((yB - yA)*px + (xB*yA-xA*yB))/(xB - xA);
+	    p.Rcsprite.x = px;
+	    p.Rcsprite.y = py;
+	  }
 	  pr -> obj = p;
 	  pr = pr -> tail;
 	}
@@ -160,18 +187,6 @@ int main(int argc, char *argv[])
 	  }
 	}
 	
-	if(keystate[SDLK_z]){
-	  double angle = (atan(abs(memx+73 - mouse.x)) / (abs(playerd.Rcsprite.y - mouse.y)));
-	  printf("%f\n", (atan(abs(memx+73 - mouse.x)) / (abs(playerd.Rcsprite.y - mouse.y))));
-	  if(v==1){
-	    shoot(memx + 73, playerd.Rcsprite.y + 16, angle);
-	  } else {
-	    shoot(memx - 80, playerd.Rcsprite.y + 16, angle);
-	  }
-	}
-	
-	
-	
 	//Gestion des Sauts
 	if((keystate[SDLK_SPACE]) && (mem_jump == 0)){
           liste* col = w_house;
@@ -203,8 +218,6 @@ int main(int argc, char *argv[])
 	  mem_jump = 0;
 	  vy = 0.0;
 	}
-
-	SDL_Delay(2);
     }
 
     SDL_Quit();

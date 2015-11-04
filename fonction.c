@@ -90,7 +90,7 @@ int collision_player_left(int memx, int memy)
   liste* col = w_house;
   while(col != NULL) {
     object w = col -> obj;
-    if((memx <= w.Rcsprite.x + 134) && (memx >= w.Rcsprite.x) && (memy <= w.Rcsprite.y + 40) && (memx >= w.Rcsprite.y) ){
+    if((memx <= w.Rcsprite.x + 60) && (memx >= w.Rcsprite.x) && (memy <= w.Rcsprite.y + 40) && (memy >= w.Rcsprite.y) ){
       res = 1;
     }  
     col -> obj = w;
@@ -105,7 +105,7 @@ int collision_player_right(int memx, int memy)
   liste* col = w_house;
   while(col != NULL) {
     object w = col -> obj;
-    if((memx + 73 >= w.Rcsprite.x) && (memx <= w.Rcsprite.x + 60) && (memy <= w.Rcsprite.y + 40) && (memx >= w.Rcsprite.y)){
+    if((memx + 73 >= w.Rcsprite.x) && (memx <= w.Rcsprite.x + 60) && (memy <= w.Rcsprite.y + 40) && (memy >= w.Rcsprite.y)){
       res = 1;
     }  
     col -> obj = w;
@@ -114,14 +114,18 @@ int collision_player_right(int memx, int memy)
   return res;
 }
   
-object create_bullet(int posx, int posy, double angle){
+object create_bullet(int posx, int posy, int direct, int mousex, int mousey){
   bullet.Rcsprite.x = posx;
   bullet.Rcsprite.y = posy;
-  bullet.angle = angle;
+  bullet.dep.x = posx;
+  bullet.dep.y = posy;
+  bullet.dest.x = mousex;
+  bullet.dest.y = mousey;
+  bullet.direct = direct;
   return bullet;
 }
 
-void shoot(int posx, int posy, double angle){
-  object bullet = create_bullet(posx,posy,angle);
+void shoot(int posx, int posy, int direct, int mousex, int mousey){
+  object bullet = create_bullet(posx,posy,direct,mousex, mousey);
   proj = insert(bullet, proj);
 }
