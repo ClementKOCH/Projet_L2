@@ -14,6 +14,7 @@ typedef struct object{
     int trans;
     int life;
     double angle;
+    int orientation;
 
 }object;
 
@@ -35,6 +36,8 @@ object create_wall();
 object create_ceiling();
 object create_door();
 object create_bullet();
+object create_zombie();
+void spawn_zombie();
 void shoot();
 void draw_player();
 void HandleEvent();
@@ -50,12 +53,15 @@ object fence;
 object bullet;
 object playerd;
 object playerg;
+object zombid;
+object zombig;
 
 /* Definition des listes */
 
 liste* w_house;
 liste* d_house;
 liste* proj;
+liste* swarm;
 
 
 

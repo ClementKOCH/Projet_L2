@@ -86,7 +86,7 @@ object create_door(int posx, int posy)
 
 int collision_player_left(int memx, int memy)
 {
-  int res;
+  int res = 0;
   liste* col = w_house;
   while(col != NULL) {
     object w = col -> obj;
@@ -101,7 +101,7 @@ int collision_player_left(int memx, int memy)
 
 int collision_player_right(int memx, int memy)
 {
-  int res;
+  int res = 0;
   liste* col = w_house;
   while(col != NULL) {
     object w = col -> obj;
@@ -121,7 +121,26 @@ object create_bullet(int posx, int posy, double angle){
   return bullet;
 }
 
+
 void shoot(int posx, int posy, double angle){
   object bullet = create_bullet(posx,posy,angle);
   proj = insert(bullet, proj);
+}
+
+object create_zombie(int posx, int posy, int orientation){
+  zombie.Rcsprite.x=posx;
+  zombie.Rcsprite.y=posy;
+  zombie.orientation=orientation;
+  return zombie;
+}
+
+void spawn_zombie(int posx, int posy){
+  int orientation;
+  if(posx<550){
+    orientation = 1;
+  }else{
+    orientation = 0;
+  }
+  object zombie = create_zombie(posx,posy,orientation);
+  swarm = insert(zombie,swarm);
 }
