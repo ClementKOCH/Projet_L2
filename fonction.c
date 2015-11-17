@@ -81,10 +81,27 @@ object create_door(int posx, int posy)
   door.Rcsprite.x = posx;
   door.Rcsprite.y = posy;
   door.trans = 0;
+  door.life = 10;
   return door;
 }
 
-int collision_player_left(int memx, int memy)
+
+
+int collision(object colider, liste* L){
+  int res = 0;
+  liste* collision = L;
+  while(collision != NULL){
+    object w = collision -> obj;
+    if((colider.Rcsprite.x <= w.Rcsprite.x + 134) && (colider.Rcsprite.x >= w.Rcsprite.x) && (colider.Rcsprite.y <= w.Rcsprite.y + 40) && (colider.Rcsprite.x >= w.Rcsprite.y)){
+      res = 1;
+    }
+    collision -> obj = w;
+    collision = collision -> tail;
+  }
+  return res;
+}
+
+/*int collision_player_left(int memx, int memy)
 {
   int res = 0;
   liste* col = w_house;
@@ -112,7 +129,7 @@ int collision_player_right(int memx, int memy)
     col = col -> tail;
   }
   return res;
-}
+}*/
   
 object create_bullet(int posx, int posy, double angle){
   bullet.Rcsprite.x = posx;
@@ -136,7 +153,7 @@ object create_zombie(int posx, int posy, int orientation){
 
 void spawn_zombie(int posx, int posy){
   int orientation;
-  if(posx<550){
+  if(posx<playerd.Rcsprite.x){
     orientation = 1;
   }else{
     orientation = 0;
@@ -144,3 +161,11 @@ void spawn_zombie(int posx, int posy){
   object zombie = create_zombie(posx,posy,orientation);
   swarm = insert(zombie,swarm);
 }
+
+object create_player(int posx, int posy, int orientation){
+  player.Rcsprite.x = posx;
+  player.Rcsprite.y = posy;
+  player. orientation= orientation;
+  return player;
+}
+

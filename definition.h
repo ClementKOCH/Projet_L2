@@ -43,9 +43,13 @@ void draw_player();
 void HandleEvent();
 int collision_player_left();
 int collision_player_right();
+int collision();
+void spawn_player();
+object create_player();
 
 /*Definition objets*/
 
+object player;
 object zombie;
 object wall;
 object door;
@@ -62,6 +66,7 @@ liste* w_house;
 liste* d_house;
 liste* proj;
 liste* swarm;
+liste* l_player;
 
 
 
