@@ -13,7 +13,7 @@ typedef struct object{
     int speed;
     int trans;
     int life;
-    double angle;
+    int direct;
     int orientation;
 
 }object;
@@ -30,7 +30,7 @@ typedef struct liste{
 
 liste* insert();
 void freelist();
-liste freeObj();
+liste* freeObj();
 void create_house();
 object create_wall();
 object create_ceiling();
@@ -47,14 +47,14 @@ int collision_player_right();
 /*Definition objets*/
 
 object zombie;
+object zombid;
+object zombig;
 object wall;
 object door;
 object fence;
 object bullet;
 object playerd;
 object playerg;
-object zombid;
-object zombig;
 
 /* Definition des listes */
 
