@@ -48,6 +48,7 @@ int main(int argc, char *argv[])
 
 		int result = 1;
 		player.Rcsprite.x = memx;
+		int init_timer = 0;
 	
         // Initialisation de la fenêtre
         SDL_Init(SDL_INIT_VIDEO);
@@ -187,19 +188,29 @@ int main(int argc, char *argv[])
 		}
 
 		if(keystate[SDLK_d]){
-	 		if(!collision(player,w_house)){ 
-			    player.orientation = 1;
-			    memx += 5;
-			    printf("%d\n", memx );
+			liste* w_house_t = w_house;
+			wall = w_house_t -> obj;
+			while(w_house_t != NULL){
+	 			if(!collision(player,wall)){ 
+			    	player.orientation = 1;
+			    	memx += 5;
+			    	printf("%d\n", memx );
+				}
 			}
+			//freelist(w_house_t);
 		}
 			
 		if(keystate[SDLK_q]){
-		  if(!collision(player,w_house)){ 
-		    	player.orientation  = 0;
-		    	memx -= 5;
-				printf("%d\n", memx );			
+			liste* w_house_t = w_house;
+			wall = w_house_t -> obj;
+			while(w_house_t != NULL){
+			  if(!collision(player,wall)){ 
+			    	player.orientation  = 0;
+			    	memx -= 5;
+					printf("%d\n", memx );			
+				}
 			}
+			//freelist(w_house_t);	
 		}
 			
 		if(keystate[SDLK_z]){
@@ -261,7 +272,6 @@ int main(int argc, char *argv[])
 		liste* swarm_m = swarm;
 		while(swarm_m != NULL){
 			object z = swarm_m -> obj;
-			if(!collision(z, d_house)){
 				if(z.orientation == 1){
 					if (z.Rcsprite.x + 84 < memx)
 					{
@@ -288,11 +298,30 @@ int main(int argc, char *argv[])
 					{
 					z.Rcsprite.x = memx;
 					}
-				}	
+				}
+				liste* d_house_t = d_house;
+				door = d_house_t -> obj;
+				while(d_house_t != NULL){
+					if(collision(z,door)){
+						while(door.life != 0){
+							init_timer += 1;
+							if(init_timer%10 == 0){
+								door.life -= 1;
+								printf("%d\n", door.life);
+							}
+							if(door.life == 0){
+								//free_obj
+							}
+						}
+					}
+					d_house_t -> obj = door;
+					d_house_t = d_house_t -> tail;
+					//freelist(d_house_t);
+				}
+				swarm_m -> obj = z;
+				swarm_m = swarm_m ->tail;
+				//freelist(swarm_m);
 			}
-			swarm_m -> obj = z;
-			swarm_m = swarm_m ->tail;
-		}
 	}
 
     SDL_Quit();

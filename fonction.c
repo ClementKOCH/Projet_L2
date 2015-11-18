@@ -87,17 +87,11 @@ object create_door(int posx, int posy)
 
 
 
-int collision(object colider, liste* L){
+int collision(object colider_1, object colider_2){
   int res = 0;
-  liste* collision = L;
-  while(collision != NULL){
-    object w = collision -> obj;
-    if((colider.Rcsprite.x <= w.Rcsprite.x + 134) && (colider.Rcsprite.x >= w.Rcsprite.x) && (colider.Rcsprite.y <= w.Rcsprite.y + 40) && (colider.Rcsprite.x >= w.Rcsprite.y)){
+    if((colider_1.Rcsprite.x <= colider_2.Rcsprite.x) && (colider_1.Rcsprite.x >= colider_2.Rcsprite.x) && (colider_1.Rcsprite.y <= colider_2.Rcsprite.y) && (colider_1.Rcsprite.y >= colider_2.Rcsprite.y)){
       res = 1;
     }
-    collision -> obj = w;
-    collision = collision -> tail;
-  }
   return res;
 }
 
