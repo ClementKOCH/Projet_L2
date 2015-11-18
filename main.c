@@ -11,7 +11,7 @@ Uint8 *keystate;
 SDL_Surface *screen = NULL, *temp;
 SDL_Event event;
 int  continuer = 1, memx = 556;
-SDL_Rect mouse;
+SDL_Rect mouse, bg;
 
 void HandleEvent(SDL_Event event)
 {
@@ -46,14 +46,21 @@ int main(int argc, char *argv[])
     while (continuer)
     {
 
-
 		int result = 1;
+		player.Rcsprite.x = memx;
 	
         // Initialisation de la fenêtre
         SDL_Init(SDL_INIT_VIDEO);
         screen = SDL_SetVideoMode(1184, 666, 32, SDL_HWSURFACE);
         SDL_WM_SetCaption("Trivial Zombie", NULL);
 		putenv("SDL_VIDEO_WINDOW_POS=center");
+
+		//Initialisation background
+
+		temp = SDL_LoadBMP("background.bmp");
+		SDL_Surface *background = SDL_DisplayFormat(temp);
+		SDL_FreeSurface(temp);
+		SDL_BlitSurface(background, NULL, screen, &bg);
 
         // Initialisation du joueur
         temp = SDL_LoadBMP("playerd.bmp");
@@ -62,8 +69,6 @@ int main(int argc, char *argv[])
         SDL_SetColorKey(playerd.sprite, SDL_SRCCOLORKEY | SDL_RLEACCEL, colorkey);
         SDL_FreeSurface(temp);
 
-        playerd.Rcsprite.x = memx;
-        playerd.Rcsprite.y -= vy;
 
         temp = SDL_LoadBMP("playerg.bmp");
         playerg.sprite = SDL_DisplayFormat(temp);
@@ -71,8 +76,6 @@ int main(int argc, char *argv[])
         SDL_SetColorKey(playerg.sprite, SDL_SRCCOLORKEY | SDL_RLEACCEL, colorkey);
         SDL_FreeSurface(temp);
 
-        playerg.Rcsprite.x = memx - 73;
-        playerg.Rcsprite.y -= vy;
 
     	//Initialisation zombie
 
@@ -103,9 +106,7 @@ int main(int argc, char *argv[])
 		colorkey = SDL_MapRGB(screen->format, 255, 0, 221);
     	SDL_SetColorKey(bullet.sprite, SDL_SRCCOLORKEY | SDL_RLEACCEL, colorkey);
 		SDL_FreeSurface(temp);
-	
-	    // Affichage du joueur
-	   	
+		   	
 
 		// Affichage de la maison
 		liste* it = w_house;
@@ -195,9 +196,9 @@ int main(int argc, char *argv[])
 			
 		if(keystate[SDLK_q]){
 		  if(!collision(player,w_house)){ 
-		    player.orientation  = 0;
-		    memx -= 5;
-			printf("%d\n", memx );			
+		    	player.orientation  = 0;
+		    	memx -= 5;
+				printf("%d\n", memx );			
 			}
 		}
 			
@@ -212,7 +213,7 @@ int main(int argc, char *argv[])
 		}
 
 		//Gestion des Sauts
-		if((keystate[SDLK_SPACE]) && (mem_jump == 0)){
+		if((keystate[SDLK_SPACE]) && (mem_jump == 1)){
 			printf("test \n");
 	        liste* col = w_house;
 		  	while(col != NULL) {
@@ -260,7 +261,7 @@ int main(int argc, char *argv[])
 		liste* swarm_m = swarm;
 		while(swarm_m != NULL){
 			object z = swarm_m -> obj;
-			if(!collision(z,d_house)){
+			if(!collision(z, d_house)){
 				if(z.orientation == 1){
 					if (z.Rcsprite.x + 84 < memx)
 					{
