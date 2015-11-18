@@ -25,6 +25,22 @@ void freelist(liste* L)
 	}
 }
 
+liste* freeObj(liste* L)
+{
+  liste* pit = L;
+  liste* new_pit = NULL;
+  while(pit != NULL) {
+    struct object test = pit -> obj;
+    if (test.life != 0) {
+      new_pit = insert(test, new_pit);
+    }else{
+      free(pit);
+    }
+    pit = pit ->tail;
+  }
+  return new_pit;
+}
+
 void create_house()
 {
   int debx = 412, deby = 494, compt = 0;
@@ -114,18 +130,42 @@ int collision_player_right(int memx, int memy)
   return res;
 }
   
-object create_bullet(int posx, int posy, int direct, int mousex, int mousey){
+object create_bullet(int posx, int posy, int direct){
   bullet.Rcsprite.x = posx;
   bullet.Rcsprite.y = posy;
-  bullet.dep.x = posx;
-  bullet.dep.y = posy;
-  bullet.dest.x = mousex;
-  bullet.dest.y = mousey;
   bullet.direct = direct;
+  bullet.life = 1;
   return bullet;
 }
 
-void shoot(int posx, int posy, int direct, int mousex, int mousey){
-  object bullet = create_bullet(posx,posy,direct,mousex, mousey);
+void shoot(int posx, int posy, int direct){
+  object bullet = create_bullet(posx,posy,direct);
   proj = insert(bullet, proj);
+}
+
+object create_zombie(int posx, int posy, int orientation){
+  zombie.Rcsprite.x=posx;
+  zombie.Rcsprite.y=posy;
+  zombie.orientation=orientation;
+  zombie.life = 1;
+  return zombie;
+}
+
+void spawn_zombie(int posx, int posy){
+  int orientation;
+  if(posx<550){
+    orientation = 1;
+  }else{
+    orientation = 0;
+  }
+  object zombie = create_zombie(posx,posy,orientation);
+  swarm = insert(zombie,swarm);
+}
+
+int collision(object p, object z){
+  if((p.Rcsprite.x >= z.Rcsprite.x) && (p.Rcsprite.x <= z.Rcsprite.x + 84)){
+    return 1;
+  }else{
+    return 0;
+  }
 }
